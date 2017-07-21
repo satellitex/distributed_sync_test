@@ -1,4 +1,5 @@
-//
-// Created by Takumi Yamashita on 2017/07/21.
-//
+#include <iostream>
 
+int main(){
+  std::cout << "start test distributed!!" << std::endl;
+}
