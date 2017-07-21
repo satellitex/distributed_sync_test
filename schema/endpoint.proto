@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package iroha.protocol;
+package sync.protocol;
 
 message Block {
     string id = 1;

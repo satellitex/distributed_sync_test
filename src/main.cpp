@@ -1,5 +1,10 @@
+#include <endpoint.pb.h>
 #include <iostream>
 
-int main(){
+using sync::protocol::Block;
+
+int main() {
   std::cout << "start test distributed!!" << std::endl;
+
+  Block bk;
 }
