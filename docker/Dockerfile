@@ -5,10 +5,6 @@
 #-----------------------------------------------------------------------
 FROM ubuntu:16.04
 
-ENV TEST_HOME /usr/local/distributedSyncTest
-ENV TEST_BUILD ${TEST_HOME}/build
-
-
 RUN apt update && apt -y upgrade && \
     apt -y install \
         software-properties-common \

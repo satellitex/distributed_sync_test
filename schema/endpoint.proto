@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+package iroha.protocol;
+
+message Block {
+    string id = 1;
+    string context = 2;
+}
