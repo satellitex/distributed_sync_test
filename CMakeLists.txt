@@ -12,10 +12,10 @@ include_directories(
         ${PROJECT_SOURCE_DIR}/schema
 )
 
-
-
 include(cmake/dependencies.cmake)
 include(cmake/functions.cmake)
 
 add_subdirectory(src)
 add_subdirectory(schema)
+
+link_directories(${PROJECT_BINARY_DIR}/lib)
