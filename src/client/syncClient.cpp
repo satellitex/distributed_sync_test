@@ -1,11 +1,9 @@
-//
-// Created by Takumi Yamashita on 2017/07/21.
-//
+#include <client/syncClient.hpp>
 
 namespace sync {
   namespace client {
-    class SyncClient {
-      void fetchBlock(std::string ip,uint64_t offset);
-    };
+    void SyncClient::fetchBlock(std::string ip,uint64_t offset){
+
+    }
   }
 }

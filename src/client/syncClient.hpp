@@ -1,7 +1,3 @@
-//
-// Created by Takumi Yamashita on 2017/07/21.
-//
-
 #ifndef DISTRIBUTEDSYNCTEST_SYNCCLIENT_HPP
 #define DISTRIBUTEDSYNCTEST_SYNCCLIENT_HPP
 

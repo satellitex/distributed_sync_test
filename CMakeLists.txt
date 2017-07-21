@@ -15,7 +15,7 @@ include_directories(
 include(cmake/dependencies.cmake)
 include(cmake/functions.cmake)
 
+link_directories(${PROJECT_BINARY_DIR}/lib)
+
 add_subdirectory(src)
 add_subdirectory(schema)
-
-link_directories(${PROJECT_BINARY_DIR}/lib)
