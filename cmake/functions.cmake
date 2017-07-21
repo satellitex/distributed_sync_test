@@ -3,17 +3,17 @@ function(compile_proto_to_cpp PROTO)
   string(REGEX REPLACE "\\.proto$" ".pb.cc" GEN_PB ${PROTO})
   string(REGEX REPLACE "\\.proto$" "proto_h" GEN_TARGET ${PROTO})
   add_custom_command(
-          OUTPUT ${IROHA_SCHEMA_DIR}/${GEN_PB_HEADER} ${IROHA_SCHEMA_DIR}/${GEN_PB}
-          COMMAND "${protoc_EXECUTABLE}" --cpp_out=${IROHA_SCHEMA_DIR} ${PROTO}
+          OUTPUT ${SCHEMA_DIR}/${GEN_PB_HEADER} ${SCHEMA_DIR}/${GEN_PB}
+          COMMAND "${protoc_EXECUTABLE}" --cpp_out=${SCHEMA_DIR} ${PROTO}
           DEPENDS protoc
-          WORKING_DIRECTORY ${IROHA_SCHEMA_DIR})
+          WORKING_DIRECTORY ${SCHEMA_DIR})
 
   add_library(${GEN_TARGET}
-          "${IROHA_SCHEMA_DIR}/${GEN_PB_HEADER}"
-          "${IROHA_SCHEMA_DIR}/${GEN_PB}")
+          "${SCHEMA_DIR}/${GEN_PB_HEADER}"
+          "${SCHEMA_DIR}/${GEN_PB}")
   target_include_directories(${GEN_TARGET} PUBLIC
           ${protobuf_INCLUDE_DIRS}
-          ${IROHA_SCHEMA_DIR}
+          ${SCHEMA_DIR}
           )
   target_link_libraries(${GEN_TARGET}
           ${protobuf_LIBRARIES}
@@ -30,21 +30,21 @@ function(compile_proto_to_grpc_cpp PROTO)
   string(REGEX REPLACE "\\.proto$" ".grpc.pb.cc" GEN_GRPC_PB ${PROTO})
   string(REGEX REPLACE "\\.proto$" "proto_h" GEN_TARGET ${PROTO})
   add_custom_command(
-          OUTPUT ${IROHA_SCHEMA_DIR}/${GEN_PB_HEADER} ${IROHA_SCHEMA_DIR}/${GEN_PB} ${IROHA_SCHEMA_DIR}/${GEN_GRPC_PB_HEADER} ${IROHA_SCHEMA_DIR}/${GEN_GRPC_PB}
-          COMMAND "${protoc_EXECUTABLE}" --cpp_out=${IROHA_SCHEMA_DIR} ${PROTO}
-          COMMAND "${protoc_EXECUTABLE}" --grpc_out=${IROHA_SCHEMA_DIR} --plugin=protoc-gen-grpc="${grpc_CPP_PLUGIN}" ${PROTO}
+          OUTPUT ${SCHEMA_DIR}/${GEN_PB_HEADER} ${SCHEMA_DIR}/${GEN_PB} ${SCHEMA_DIR}/${GEN_GRPC_PB_HEADER} ${SCHEMA_DIR}/${GEN_GRPC_PB}
+          COMMAND "${protoc_EXECUTABLE}" --cpp_out=${SCHEMA_DIR} ${PROTO}
+          COMMAND "${protoc_EXECUTABLE}" --grpc_out=${SCHEMA_DIR} --plugin=protoc-gen-grpc="${grpc_CPP_PLUGIN}" ${PROTO}
           DEPENDS grpc_cpp_plugin
-          WORKING_DIRECTORY ${IROHA_SCHEMA_DIR})
+          WORKING_DIRECTORY ${SCHEMA_DIR})
 
   add_library(${GEN_TARGET}
-          "${IROHA_SCHEMA_DIR}/${GEN_PB_HEADER}"
-          "${IROHA_SCHEMA_DIR}/${GEN_PB}"
-          "${IROHA_SCHEMA_DIR}/${GEN_GRPC_PB_HEADER}"
-          "${IROHA_SCHEMA_DIR}/${GEN_GRPC_PB}")
+          "${SCHEMA_DIR}/${GEN_PB_HEADER}"
+          "${SCHEMA_DIR}/${GEN_PB}"
+          "${SCHEMA_DIR}/${GEN_GRPC_PB_HEADER}"
+          "${SCHEMA_DIR}/${GEN_GRPC_PB}")
   target_include_directories(${GEN_TARGET} PUBLIC
           ${protobuf_INCLUDE_DIRS}
           ${grpc_INCLUDE_DIR}
-          ${IROHA_SCHEMA_DIR}
+          ${SCHEMA_DIR}
           )
   target_link_libraries(${GEN_TARGET}
           ${protobuf_LIBRARIES}

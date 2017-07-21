@@ -6,3 +6,12 @@ message Block {
     string id = 1;
     string context = 2;
 }
+
+message Request {
+    string ip = 1;
+    string offset = 2;
+}
+
+service Sync {
+    rpc fetchBlocks (Request) returns (stream Block);
+}

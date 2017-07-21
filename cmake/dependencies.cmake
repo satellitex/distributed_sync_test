@@ -4,7 +4,6 @@ set_directory_properties(PROPERTIES
     EP_PREFIX ${EP_PREFIX}
 )
 
-
 ################################
 #           protobuf           #
 ################################
