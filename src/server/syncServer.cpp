@@ -23,7 +23,6 @@ namespace sync {
     ::grpc::Status SyncServer::fetchBlocks(
         ::grpc::ServerContext* context, const Request* request,
         ::grpc::ServerWriter<Block>* writer) {
-      auto ip = request->ip();
       auto offset = request->offset();
 
       std::cout << "receive:" << std::endl;

@@ -20,4 +20,12 @@ target_link_libraries(server-main
     server
     helper
     strage
+    pthread
+)
+
+add_executable(commit commit_block.cpp)
+target_link_libraries(commit
+    client
+    endpoint
+    pthread
 )
