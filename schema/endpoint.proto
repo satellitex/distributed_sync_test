@@ -8,8 +8,7 @@ message Block {
 }
 
 message Request {
-    string ip = 1;
-    string offset = 2;
+    uint64 offset = 2;
 }
 
 service Sync {

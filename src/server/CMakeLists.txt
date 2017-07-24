@@ -3,4 +3,5 @@ add_library(server STATIC
 )
 target_link_libraries(server
     endpoint
+    strage
 )
