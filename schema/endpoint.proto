@@ -5,12 +5,25 @@ package sync.protocol;
 message Block {
     string id = 1;
     string context = 2;
+    int64 hash = 3;
 }
 
 message Request {
     uint64 offset = 2;
 }
 
+message CommitResponse {
+    enum Status {
+        SUCCESS = 0;
+        FAILED = 1;
+    }
+    Status status = 1;
+}
+
 service Sync {
     rpc fetchBlocks (Request) returns (stream Block);
+}
+
+service Commit {
+    rpc commitBlock (Block) returns (CommitResponse);
 }
