@@ -3,9 +3,10 @@ syntax = "proto3";
 package sync.protocol;
 
 message Block {
-    string id = 1;
-    string context = 2;
-    int64 hash = 3;
+    uint64 id = 1;
+    string creator = 2;
+    string context = 3;
+    int64 hash = 4;
 }
 
 message Request {

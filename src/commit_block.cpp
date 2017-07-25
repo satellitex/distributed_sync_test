@@ -18,7 +18,7 @@ int main() {
   Block block;
   int pr = 0;
   for(int i=0;i<100;i++) {
-    block.set_id(std::to_string(i));
+    block.set_id(i);
     block.set_context("context!! " + std::to_string(i));
     block.set_hash(((pr+i)%mod));
 
