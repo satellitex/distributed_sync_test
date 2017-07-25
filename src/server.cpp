@@ -5,7 +5,6 @@
 #include <server/syncServer.hpp>
 #include <server/commitServer.hpp>
 
-
 int main() {
 
   std::cout << "---------------------------------- commit Server run!! ----------------------------------" << std::endl;
@@ -13,7 +12,6 @@ int main() {
 
   std::cout << "---------------------------------- sync Server run!! ----------------------------------" << std::endl;
   std::thread sync_thread(sync::server::run);
-
 
   commit_thread.join();
   sync_thread.join();

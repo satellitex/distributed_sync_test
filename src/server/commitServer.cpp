@@ -1,5 +1,6 @@
 #include <grpc/support/log.h>
 #include <server/commitServer.hpp>
+#include <strage/strage.hpp>
 
 namespace commit {
   namespace server {
@@ -43,13 +44,13 @@ namespace commit {
 
 
         std::cout << "CallData CREATE" << std::endl;
-        std::cout << "id: " << block_.id() << std::endl;
 
       } else if (status_ == PROCESS) {
         new CallData(service_, cq_);
 
         std::cout << "CallData PROCESS" << std::endl;
         std::cout << "id: " << block_.id() << std::endl;
+        sync::strage::strage().emplace_back( block_ );
 
         response_.set_status(CommitResponse::SUCCESS);
         status_ = FINISH;

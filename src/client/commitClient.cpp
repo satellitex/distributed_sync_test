@@ -16,23 +16,28 @@ namespace commit {
     }
 
     void CommitClient::send(std::string ip, const Block &block) {
+      static auto stub_ = Commit::NewStub(::grpc::CreateChannel(
+          ip + ":50051", grpc::InsecureChannelCredentials()));
+
       CommitResponse response;
+
       ::grpc::ClientContext context;
       ::grpc::CompletionQueue cq;
       ::grpc::Status status;
 
       std::cout << "sennd Async!!" << std::endl;
-      auto rpc(
-          stub_->AsynccommitBlock(&context, block, &cq));
+      auto rpc = std::move(stub_->AsynccommitBlock(&context, block, &cq));
+      std::cout << "pre thread!!" << std::endl;
 
       std::thread th([&]() {
-        rpc->Finish(&response, &status, (void*)1);
+        std::cout << "in thread!!" << std::endl;
+        rpc->Finish(&response, &status, (void *)1);
 
         void *got_tag;
         bool ok = false;
 
         GPR_ASSERT(cq.Next(&got_tag, &ok));
-        GPR_ASSERT(got_tag == (void*)1);
+        GPR_ASSERT(got_tag == (void *)1);
         GPR_ASSERT(ok);
 
         if (status.ok()) {
@@ -41,7 +46,6 @@ namespace commit {
           std::cout << "RPC failed" << std::endl;
         }
       });
-
       th.join();
     }
   }

@@ -18,7 +18,6 @@ namespace commit {
       void send(std::string ip, const Block &block);
 
      private:
-      std::unique_ptr<Commit::Stub> stub_;
     };
   }
 }

@@ -6,4 +6,5 @@ target_link_libraries(client
     endpoint
     helper
     grpc++
+    pthread
 )
