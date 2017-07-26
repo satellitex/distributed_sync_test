@@ -1,11 +1,11 @@
-# Grpc + flatbuffers + Streaming Connection test ( alike Sync )
+# Distributed Synchornization System Test ( Use Grpc + protoc-buffer + Streaming Connection )
 
 ## prepare
 ```
 cd docker
-docker build -t satellitex/flatbuf-test .
+docker build -t satellitex/distributed-sync-test .
 cd ../
-docker run -it --name flat-test -v $(pwd):/opt/flat-test satellitex/flatbuf-test /bin/bash
+docker run -it --name dsync -v $(pwd):/opt/distributed_sync_test satellitex/distributed-sync-test /bin/bash
 ```
 
 
