@@ -1,3 +1,5 @@
+#include <thread>
+
 #include <client/syncClient.hpp>
 #include <strage/strage.hpp>
 
@@ -7,34 +9,49 @@ namespace sync {
   namespace client {
     using Request = sync::protocol::Request;
     using Block = sync::protocol::Block;
-    void SyncClient::fetchBlocks(std::string ip, uint64_t offset) {
+    SyncClient::SyncClient(std::string ip) {
       stub_ = Sync::NewStub(::grpc::CreateChannel(
           ip + ":50051", ::grpc::InsecureChannelCredentials()));
+    }
+
+    void SyncClient::fetchBlocks(uint64_t offset) {
+      ::grpc::ClientContext context;
+
+      std::shared_ptr<::grpc::ClientReaderWriter<Request, Block>> stream(
+          stub_->fetchBlocks(&context));
 
       Request request;
       request.set_offset(offset);
 
-      ::grpc::ClientContext context;
+      stream->Write(request);
 
-      std::cout << "send fetchBlocks :" << std::endl;
-      std::cout << "offset: " << offset << std::endl;
+      std::thread writer([&stream]() {
+        while (sync::strage::status().unsynced())
+          ;
+        std::cout << "synced!!" << std::endl;
+        Request request;
+        request.set_offset(-1);
+        stream->Write(request);
 
-      std::unique_ptr<::grpc::ClientReader<Block>> reader(
-          stub_->fetchBlocks(&context, request));
+        stream->WritesDone();
+      });
 
-      Block block;
-      while (reader->Read(&block)) {
+      Block res_block;
+      while (stream->Read(&res_block)) {
         std::cout << "Read Block!!" << std::endl;
-        std::cout << "id: " << block.id() << std::endl;
-        std::cout << "context: " << block.context() << std::endl;
-        sync::strage::strage().emplace_back(block);
+        std::cout << "id: " << res_block.id() << std::endl;
+        std::cout << "context: " << res_block.context() << std::endl;
+        sync::strage::strage().emplace_back(res_block);
+        if(res_block.id() > 80) sync::strage::status().synced();
       }
 
-      ::grpc::Status status = reader->Finish();
-      if (status.ok())
-        std::cout << "fetchBlocks rpc succeded." << std::endl;
-      else
-        std::cout << "fetchBlocks rpc fialed." << std::endl;
+      writer.join();
+      ::grpc::Status status = stream->Finish();
+      if (!status.ok()) {
+        std::cout << "fetchBlock rpc Failed." << std::endl;
+      } else {
+        std::cout << "fetchBlock rpc Success!" << std::endl;
+      }
     }
   }
 }

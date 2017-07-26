@@ -3,6 +3,7 @@
 #include <strage/strage.hpp>
 
 #include <iostream>
+#include <thread>
 
 namespace sync {
   namespace server {
@@ -21,24 +22,44 @@ namespace sync {
     }
 
     ::grpc::Status SyncServer::fetchBlocks(
-        ::grpc::ServerContext* context, const Request* request,
-        ::grpc::ServerWriter<Block>* writer) {
-      auto offset = request->offset();
+        ::grpc::ServerContext* context,
+        ::grpc::ServerReaderWriter<Block, Request>* stream) {
+      Request request;
+      stream->Read(&request);
+      auto offset = request.offset();
 
       std::cout << "receive:" << std::endl;
       std::cout << "offset: " << offset << std::endl;
 
-      for (auto i = 0;; i++) {
-        while (i >= sync::strage::strage().size())
-          ;
-        auto& bk = sync::strage::strage().at(i);
-        std::cout << i << "-th block" << std::endl;
-        std::cout << "id : " << bk.id() << std::endl;
-        std::cout << "context : " << bk.context() << std::endl;
-        writer->Write(sync::strage::strage().at(i));
+      bool end_flag = false;
 
-        if (i > 100) break;
-      }
+      std::thread receiver([&stream,&end_flag]{
+        Request request;
+        while( stream->Read(&request) ){
+          if( request.offset() == -1 ) break;
+        }
+        end_flag = true;
+      });
+
+      std::thread sender([&stream,offset,&end_flag]{
+
+        for (auto i = offset;; i++) {
+          while (i >= sync::strage::strage().size()){
+            if(end_flag) break;
+          }
+          if(end_flag) break;
+          auto& bk = sync::strage::strage().at(i);
+          std::cout << i << "-th block" << std::endl;
+          std::cout << "id : " << bk.id() << std::endl;
+          std::cout << "context : " << bk.context() << std::endl;
+          stream->Write(bk);
+        }
+
+      });
+
+
+      receiver.join();
+      sender.join();
       return ::grpc::Status::OK;
     }
   }

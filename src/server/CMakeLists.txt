@@ -7,4 +7,5 @@ target_link_libraries(server
     strage
     helper
     grpc++
+    pthread
 )

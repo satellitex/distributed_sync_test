@@ -14,10 +14,12 @@ namespace sync {
     using Block = sync::protocol::Block;
 
     void run();
+
     class SyncServer : public Sync::Service {
-      ::grpc::Status fetchBlocks(::grpc::ServerContext* context,
-                                 const Request* rectangle,
-                                 ::grpc::ServerWriter<Block>* writer) override;
+    public:
+      ::grpc::Status fetchBlocks(
+          ::grpc::ServerContext* context,
+          ::grpc::ServerReaderWriter<Block,Request>* stream) override;
     };
   }
 }

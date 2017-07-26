@@ -12,9 +12,9 @@ namespace sync {
 
     class SyncClient {
      public:
-      SyncClient() {}
+      SyncClient(std::string ip);
 
-      void fetchBlocks(std::string ip, uint64_t offset);
+      void fetchBlocks(uint64_t offset);
      private:
       std::unique_ptr<Sync::Stub> stub_;
     };

@@ -10,7 +10,7 @@ message Block {
 }
 
 message Request {
-    uint64 offset = 2;
+    int64 offset = 2;
 }
 
 message CommitResponse {
@@ -22,7 +22,7 @@ message CommitResponse {
 }
 
 service Sync {
-    rpc fetchBlocks (Request) returns (stream Block);
+    rpc fetchBlocks (stream Request) returns (stream Block);
 }
 
 service Commit {

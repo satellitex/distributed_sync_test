@@ -6,7 +6,8 @@
 int main() {
   std::cout << "start test distributed!!" << std::endl;
 
-  sync::client::SyncClient client;
+  sync::client::SyncClient client( helper::getMyIp() );
   std::cout << "-------------- fetchBlocks --------------" << std::endl;
-  client.fetchBlocks(helper::getMyIp(), 0);
+  client.fetchBlocks(0);
+  std::cout << "Synced!!" << std::endl;
 }
