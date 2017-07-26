@@ -11,14 +11,14 @@ namespace commit {
 
     using CommitResponse = sync::protocol::CommitResponse;
 
-    CommitClient::CommitClient(std::string ip) {
-      stub_ = Commit::NewStub(::grpc::CreateChannel(
-          ip + ":50051", grpc::InsecureChannelCredentials()));
-    }
-
     void commit(const Block &block) {
       static CommitClient client(helper::getMyIp());
       client.send(block);
+    }
+
+    CommitClient::CommitClient(std::string ip) {
+      stub_ = Commit::NewStub(::grpc::CreateChannel(
+          ip + ":50051", grpc::InsecureChannelCredentials()));
     }
 
     void CommitClient::send(const Block &block) {

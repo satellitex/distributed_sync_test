@@ -12,6 +12,8 @@ namespace commit {
     void handle(const Block& block) {
       static std::thread sync_thread_;
 
+      std::cout << "Handler" << std::endl;
+
       if (sync::strage::validate(block)) {
         std::cout << "Activate!!" << std::endl;
         sync::strage::status().activate();
