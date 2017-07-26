@@ -42,7 +42,12 @@ namespace sync {
         std::cout << "id: " << res_block.id() << std::endl;
         std::cout << "context: " << res_block.context() << std::endl;
         sync::strage::strage().emplace_back(res_block);
-        if(res_block.id() > 80) sync::strage::status().synced();
+
+        std::cout << "status: " << sync::strage::status().synced() << std::endl;
+        if(res_block.id() > 80) {
+          std::cout << "change status!"<< std::endl;
+          sync::strage::status().activate();
+        }
       }
 
       writer.join();

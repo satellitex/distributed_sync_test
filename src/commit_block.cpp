@@ -29,7 +29,7 @@ int main() {
     pr %= mod;
 
     //wait 1 sec
-    std::chrono::milliseconds wait( 1000 );
+    std::chrono::milliseconds wait( 10 );
     std::this_thread::sleep_for( wait );
   }
 

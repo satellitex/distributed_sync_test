@@ -36,6 +36,7 @@ namespace sync {
       std::thread receiver([&stream,&end_flag]{
         Request request;
         while( stream->Read(&request) ){
+          std::cout << "read request!! " << request.offset() << std::endl;
           if( request.offset() == -1 ) break;
         }
         end_flag = true;
