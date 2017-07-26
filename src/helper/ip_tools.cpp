@@ -6,11 +6,13 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 
+#include <cstdlib>
 #include <cstring>
-
+#include <fstream>
+#include <iostream>
 
 namespace helper {
-  std::string getMyIp(){
+  std::string getMyIp() {
     std::string interface = "eth0";  // TODO : temporary "eth0"
 
     int sockfd;
@@ -22,5 +24,20 @@ namespace helper {
     ioctl(sockfd, SIOCGIFADDR, &ifr);
     close(sockfd);
     return inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr);
+  }
+  std::string getRootIp() {
+    try {
+      std::string path = std::getenv("SYNC_PATH");
+      std::cout << path << std::endl;
+
+      std::ifstream fin(path + "/config/root.txt");
+      std::string ip;
+      fin >> ip;
+      return ip;
+    } catch (...) {
+      std::cout << "can't setting config." << std::endl;
+      std::cout << "please write root ip to `config/root.txt`" << std::endl;
+      return getMyIp();
+    }
   }
 }

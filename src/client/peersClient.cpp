@@ -1,10 +1,13 @@
 #include <client/peersClient.hpp>
 #include <helper/ip_tools.hpp>
 
+#include <chrono>
+#include <thread>
+
 #include <grpc++/grpc++.h>
 
 namespace peers {
-  namespace service {
+  namespace client {
 
     using AddPeer = sync::protocol::AddPeer;
     using CommitResponse = sync::protocol::CommitResponse;
@@ -12,6 +15,10 @@ namespace peers {
     PeersClient::PeersClient(std::string ip) {
       stub_ = Peer::NewStub(::grpc::CreateChannel(
           ip + ":50051", grpc::InsecureChannelCredentials()));
+
+      // wait 1 sec
+      std::chrono::milliseconds wait(1000);
+      std::this_thread::sleep_for(wait);
     }
 
     bool PeersClient::addPeer() {

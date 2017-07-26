@@ -1,8 +1,10 @@
 #include <client/commitClient.hpp>
-#include <helper/ip_tools.hpp>
+#include <strage/strage.hpp>
 
 #include <iostream>
+#include <chrono>
 #include <thread>
+#include <unordered_map>
 
 #include <grpc/support/log.h>
 
@@ -12,13 +14,23 @@ namespace commit {
     using CommitResponse = sync::protocol::CommitResponse;
 
     void commit(const Block &block) {
-      static CommitClient client(helper::getMyIp());
-      client.send(block);
+      static std::unordered_map<std::string,std::unique_ptr<CommitClient>> clients;
+
+      for( auto &p : sync::strage::peers() ){
+        if( !clients.count(p) )
+          clients[p] = std::make_unique<CommitClient>( p );
+        clients[p]->send(block);
+      }
+
     }
 
     CommitClient::CommitClient(std::string ip) {
       stub_ = Commit::NewStub(::grpc::CreateChannel(
           ip + ":50051", grpc::InsecureChannelCredentials()));
+
+      // wait 1 sec
+      std::chrono::milliseconds wait(1000);
+      std::this_thread::sleep_for(wait);
     }
 
     void CommitClient::send(const Block &block) {

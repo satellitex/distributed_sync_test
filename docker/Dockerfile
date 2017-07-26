@@ -5,6 +5,8 @@
 #-----------------------------------------------------------------------
 FROM ubuntu:16.04
 
+export SYNC_PATH="/opt/dsync"
+
 RUN apt update && apt -y upgrade && \
     apt -y install \
         software-properties-common \

@@ -6,6 +6,7 @@
 #include <client/commitClient.hpp>
 #include <strage/strage.hpp>
 #include <server/peersServer.hpp>
+#include <server/syncServer.hpp>
 
 #include <endpoint.pb.h>
 
@@ -27,6 +28,8 @@ int main() {
 
   std::cout << "---------------------------------- addPeer Server run!! ----------------------------------" << std::endl;
   std::thread addpeer_thread(peers::server::run);
+  std::cout << "---------------------------------- sync Server run!! ----------------------------------" << std::endl;
+  std::thread sync_thread(sync::server::run);
 
 
   while( sync::strage::peers().empty() );
@@ -41,4 +44,5 @@ int main() {
   }
 
   addpeer_thread.join();
+  sync_thread.join();
 }

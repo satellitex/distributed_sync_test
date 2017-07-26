@@ -32,3 +32,11 @@ target_link_libraries(root-main
     pthread
     strage
 )
+
+add_executable(child-main child_main.cpp)
+target_link_libraries(child-main
+    server
+    pthread
+    client
+    helper
+)

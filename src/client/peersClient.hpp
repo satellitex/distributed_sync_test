@@ -5,15 +5,17 @@
 #include <endpoint.grpc.pb.h>
 
 namespace peers {
-  namespace service {
+  namespace client {
 
     using Peer = sync::protocol::Peer;
 
     class PeersClient {
+    public:
       PeersClient(std::string ip);
       bool addPeer();
+    private:
+      std::unique_ptr<Peer::Stub> stub_;
     };
-    std::unique_ptr<Peer::Stub> stub_;
   }
 }
 
