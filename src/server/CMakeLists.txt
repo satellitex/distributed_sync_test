@@ -8,4 +8,5 @@ target_link_libraries(server
     helper
     grpc++
     pthread
+    handler
 )

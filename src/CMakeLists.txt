@@ -5,6 +5,7 @@ add_subdirectory(client)
 add_subdirectory(server)
 add_subdirectory(helper)
 add_subdirectory(strage)
+add_subdirectory(handler)
 
 add_executable(client-main client.cpp)
 target_link_libraries(client-main

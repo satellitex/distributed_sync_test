@@ -4,32 +4,43 @@
 #include <strage/strage.hpp>
 #include <strage/validator.hpp>
 
+#include <thread>
+
 namespace commit {
   namespace handler {
+
     void handle(const Block& block) {
-      static thread sync_thread_;
+      static std::thread sync_thread_;
 
       if (sync::strage::validate(block)) {
+        std::cout << "Activate!!" << std::endl;
+        sync::strage::status().activate();
         sync::strage::strage().emplace_back(block);
+
         if (sync::strage::status().unsynced()) {
-          sync::strage::status().activate();
+          std::cout << "send activate tx" << std::endl;
           // TODO send activate tx
-        } else {
-          if (sync::strage::status().synced()) {
-            sync::strage::status().stop();
-            // TODO send stop tx
-          } else {
-            if( !sync_thread_.joinable() ) {
-              sync_thread_ = [&]() {
-                sync::client::SyncClient client;
-                auto ip = block.ip();
-                client.fetchBlocks(ip, sync::strage::strage().size());
-              };
-            }
-          }
+        }
+
+      } else {
+        std::cout << "Stop!!" << std::endl;
+        sync::strage::status().stop();
+        if (sync::strage::status().synced()) {
+          std::cout << "send stop tx" << std::endl;
+          // TODO send stop tx
+        }
+
+        if (!sync_thread_.joinable()) {
+          std::cout << "start SyncClient!!" << std::endl;
+
+          sync_thread_ = std::thread([&block]() {
+            auto creator = block.creator();
+            sync::client::SyncClient client(creator);
+            client.fetchBlocks(sync::strage::strage().size());
+          });
+          sync_thread_.join();
         }
       }
-
     }
   }
 }
