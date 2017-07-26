@@ -12,5 +12,10 @@ namespace sync {
       return status_;
     }
 
+    Peers& peers(){
+      static Peers peers_;
+      return peers_;
+    }
+
   }
 }

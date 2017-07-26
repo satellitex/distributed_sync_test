@@ -21,10 +21,18 @@ message CommitResponse {
     Status status = 1;
 }
 
+message AddPeer {
+    string peer = 1;
+}
+
 service Sync {
     rpc fetchBlocks (stream Request) returns (stream Block);
 }
 
 service Commit {
     rpc commitBlock (Block) returns (CommitResponse);
+}
+
+service Peer {
+    rpc addPeer (AddPeer) returns (CommitResponse);
 }

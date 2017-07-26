@@ -2,16 +2,19 @@
 #define DISTRIBUTED_SYNC_STRAGE_HPP
 
 #include <endpoint.pb.h>
+
 #include <exception>
+#include <string>
 #include <vector>
 
 namespace sync {
   namespace strage {
     using Block = sync::protocol::Block;
     using Strage = std::vector<Block>;
+    using Peers = std::vector<std::string>;
 
     class Status {
-    public:
+     public:
       Status() { status_ = false; }
       void activate() { status_ = true; }
       void stop() { status_ = false; }
@@ -22,6 +25,7 @@ namespace sync {
       bool status_;
     };
 
+    Peers& peers();
     Strage& strage();
     Status& status();
   }
