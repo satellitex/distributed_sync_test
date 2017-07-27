@@ -16,6 +16,7 @@ namespace sync {
     }
 
     void SyncClient::fetchBlocks(uint64_t offset) {
+      std::cout << "fetchBlocks!!" << std::endl;
       ::grpc::ClientContext context;
 
       std::shared_ptr<::grpc::ClientReaderWriter<Request, Block>> stream(
@@ -45,10 +46,6 @@ namespace sync {
         sync::strage::strage().emplace_back(res_block);
 
         std::cout << "status: " << sync::strage::status().synced() << std::endl;
-        if(res_block.id() > 80) {
-          std::cout << "change status!"<< std::endl;
-          sync::strage::status().activate();
-        }
       }
 
       writer.join();

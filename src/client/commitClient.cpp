@@ -43,7 +43,7 @@ namespace commit {
 
       void *got_tag;
       bool ok = false;
-      if (!cq.AsyncNext(&got_tag, &ok, (gpr_timespec){(int64_t)0, (int32_t)500,
+      if (!cq.AsyncNext(&got_tag, &ok, (gpr_timespec){(int64_t)1, (int32_t)500,
                                                       GPR_TIMESPAN})) {
         throw std::runtime_error("CompletionQueue::Next() returns error");
       }

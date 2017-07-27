@@ -11,31 +11,31 @@ namespace commit {
   namespace handler {
 
     void handle(const Block& block) {
-      static std::thread sync_thread_;
-
+      static bool synced = false;
       std::cout << "Handler" << std::endl;
 
       if (sync::strage::validate(block)) {
-        std::cout << "Activate!!" << std::endl;
-        sync::strage::status().activate();
-        sync::strage::strage().emplace_back(block);
-
         if (sync::strage::status().unsynced()) {
+          synced = false;
           std::cout << "send activate tx" << std::endl;
           // TODO send activate tx
         }
 
+        std::cout << "Activate!!" << std::endl;
+        sync::strage::status().activate();
+        sync::strage::strage().emplace_back(block);
       } else {
-        std::cout << "Stop!!" << std::endl;
-        sync::strage::status().stop();
         if (sync::strage::status().synced()) {
           std::cout << "send stop tx" << std::endl;
           // TODO send stop tx
         }
 
-        if (!sync_thread_.joinable()) {
-          std::cout << "start SyncClient!!" << std::endl;
+        std::cout << "Stop!!" << std::endl;
+        sync::strage::status().stop();
 
+        if (!synced) {
+          std::cout << "start SyncClient!!" << std::endl;
+          synced = true;
           helper::thread::pool().process(std::thread([block]() {
             auto creator = block.creator();
             sync::client::SyncClient client(creator);

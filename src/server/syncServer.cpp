@@ -24,6 +24,7 @@ namespace sync {
     ::grpc::Status SyncServer::fetchBlocks(
         ::grpc::ServerContext* context,
         ::grpc::ServerReaderWriter<Block, Request>* stream) {
+      std::cout << "fetchBlocks!!" << std::endl;
       Request request;
       stream->Read(&request);
       auto offset = request.offset();
