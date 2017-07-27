@@ -1,8 +1,8 @@
 #include <client/commitClient.hpp>
 #include <strage/strage.hpp>
 
-#include <iostream>
 #include <chrono>
+#include <iostream>
 #include <thread>
 #include <unordered_map>
 
@@ -14,23 +14,17 @@ namespace commit {
     using CommitResponse = sync::protocol::CommitResponse;
 
     void commit(const Block &block) {
-      static std::unordered_map<std::string,std::unique_ptr<CommitClient>> clients;
-
-      for( auto &p : sync::strage::peers() ){
-        if( !clients.count(p) )
-          clients[p] = std::make_unique<CommitClient>( p );
+      static std::unordered_map<std::string, std::unique_ptr<CommitClient>>
+          clients;
+      for (auto &p : sync::strage::peers()) {
+        if (!clients.count(p)) clients[p] = std::make_unique<CommitClient>(p);
         clients[p]->send(block);
       }
-
     }
 
     CommitClient::CommitClient(std::string ip) {
       stub_ = Commit::NewStub(::grpc::CreateChannel(
-          ip + ":50051", grpc::InsecureChannelCredentials()));
-
-      // wait 1 sec
-      std::chrono::milliseconds wait(1000);
-      std::this_thread::sleep_for(wait);
+          ip + ":50052", grpc::InsecureChannelCredentials()));
     }
 
     void CommitClient::send(const Block &block) {
@@ -44,24 +38,26 @@ namespace commit {
       auto rpc = std::move(stub_->AsynccommitBlock(&context, block, &cq));
       std::cout << "pre thread!!" << std::endl;
 
-      std::thread th([&]() {
-        std::cout << "in thread!!" << std::endl;
-        rpc->Finish(&response, &status, (void *)1);
+      std::cout << "in thread!!" << std::endl;
+      rpc->Finish(&response, &status, (void *)1);
 
-        void *got_tag;
-        bool ok = false;
+      void *got_tag;
+      bool ok = false;
+      if (!cq.AsyncNext(&got_tag, &ok, (gpr_timespec){(int64_t)0, (int32_t)500,
+                                                      GPR_TIMESPAN})) {
+        throw std::runtime_error("CompletionQueue::Next() returns error");
+      }
 
-        GPR_ASSERT(cq.Next(&got_tag, &ok));
+      if (got_tag != (void *) 1)
+        std::cout << "TimeOut" << std::endl;
+      else {
         GPR_ASSERT(got_tag == (void *)1);
-        GPR_ASSERT(ok);
-
         if (status.ok()) {
           std::cout << "SucessStatus: " << response.status() << std::endl;
         } else {
           std::cout << "RPC failed" << std::endl;
         }
-      });
-      th.join();
+      }
     }
   }
 }

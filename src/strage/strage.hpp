@@ -28,6 +28,8 @@ namespace sync {
     Peers& peers();
     Strage& strage();
     Status& status();
+
+    void addPeer(const std::string&);
   }
 }
 #endif  // DISTRIBUTED_SYNC_STRAGE_HPP

@@ -17,7 +17,7 @@ namespace commit {
     }
 
     void CommitServer::Run() {
-      std::string server_address(helper::getMyIp() + ":50051");
+      std::string server_address(helper::getMyIp() + ":50052");
 
       ServerBuilder builder;
       builder.AddListeningPort(server_address,

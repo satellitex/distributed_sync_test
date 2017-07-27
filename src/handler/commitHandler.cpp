@@ -1,6 +1,7 @@
 
 #include <client/syncClient.hpp>
 #include <handler/commitHandler.hpp>
+#include <helper/thread_pool.hpp>
 #include <strage/strage.hpp>
 #include <strage/validator.hpp>
 
@@ -35,12 +36,11 @@ namespace commit {
         if (!sync_thread_.joinable()) {
           std::cout << "start SyncClient!!" << std::endl;
 
-          sync_thread_ = std::thread([&block]() {
+          helper::thread::pool().process(std::thread([block]() {
             auto creator = block.creator();
             sync::client::SyncClient client(creator);
             client.fetchBlocks(sync::strage::strage().size());
-          });
-          sync_thread_.join();
+          }));
         }
       }
     }

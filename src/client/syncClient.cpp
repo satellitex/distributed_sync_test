@@ -13,11 +13,6 @@ namespace sync {
     SyncClient::SyncClient(std::string ip) {
       stub_ = Sync::NewStub(::grpc::CreateChannel(
           ip + ":50051", ::grpc::InsecureChannelCredentials()));
-
-
-      // wait 1 sec
-      std::chrono::milliseconds wait(1000);
-      std::this_thread::sleep_for(wait);
     }
 
     void SyncClient::fetchBlocks(uint64_t offset) {

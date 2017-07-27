@@ -14,7 +14,7 @@ namespace peers {
 
     PeersClient::PeersClient(std::string ip) {
       stub_ = Peer::NewStub(::grpc::CreateChannel(
-          ip + ":50051", grpc::InsecureChannelCredentials()));
+          ip + ":50053", grpc::InsecureChannelCredentials()));
 
       // wait 1 sec
       std::chrono::milliseconds wait(1000);

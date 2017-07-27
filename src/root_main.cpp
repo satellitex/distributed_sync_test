@@ -32,7 +32,7 @@ int main() {
   std::thread sync_thread(sync::server::run);
 
 
-  while( sync::strage::peers().empty() );
+   while( sync::strage::peers().empty() );
 
   for(int i=0;i<sync::strage::strage().size();i++){
     std::cout << i << "-th block send!!" << std::endl;

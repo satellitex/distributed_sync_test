@@ -12,7 +12,7 @@ namespace peers {
     using CommitResponse = sync::protocol::CommitResponse;
 
     void run() {
-      std::string server_address(helper::getMyIp() + ":50051");
+      std::string server_address(helper::getMyIp() + ":50053");
       peers::server::PeersServer service;
 
       ::grpc::ServerBuilder builder;
@@ -28,7 +28,7 @@ namespace peers {
                                         const AddPeer* addPeer,
                                         CommitResponse* commitResponse) {
       auto ip = addPeer->peer();
-      sync::strage::peers().emplace_back(ip);
+      sync::strage::addPeer(ip);
 
       commitResponse->set_status(CommitResponse::SUCCESS);
       return ::grpc::Status::OK;
