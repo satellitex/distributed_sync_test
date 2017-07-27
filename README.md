@@ -16,3 +16,23 @@ cd build
 cmake ..
 make
 ```
+
+### run unit test
+#### one side
+```
+./bin/root-main
+```
+#### another side
+```
+./bin/child-main
+```
+After N sec
+```
+Ctrl-C
+```
+After N sec
+```
+./bin/child-main
+```
+
+
