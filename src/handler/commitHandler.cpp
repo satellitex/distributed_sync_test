@@ -36,11 +36,9 @@ namespace commit {
         if (!synced) {
           std::cout << "start SyncClient!!" << std::endl;
           synced = true;
-          helper::thread::pool().process(std::thread([block]() {
-            auto creator = block.creator();
-            sync::client::SyncClient client(creator);
-            client.fetchBlocks(sync::strage::strage().size());
-          }));
+          // process async
+          helper::thread::pool().process(
+              std::thread(sync::client::blockDownload, block));
         }
       }
     }

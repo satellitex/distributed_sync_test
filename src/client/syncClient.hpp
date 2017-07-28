@@ -9,6 +9,7 @@ namespace sync {
   namespace client {
 
     using Sync = sync::protocol::Sync;
+    using Block = sync::protocol::Block;
 
     class SyncClient {
      public:
@@ -18,6 +19,8 @@ namespace sync {
      private:
       std::unique_ptr<Sync::Stub> stub_;
     };
+
+    void blockDownload(const Block& block);
   }
 }
 

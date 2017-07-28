@@ -1,15 +1,26 @@
 #include <chrono>
 #include <thread>
+#include <unordered_map>
 
 #include <client/syncClient.hpp>
 #include <strage/strage.hpp>
+#include <strage/validator.hpp>
 
 #include <grpc++/grpc++.h>
 
 namespace sync {
   namespace client {
     using Request = sync::protocol::Request;
-    using Block = sync::protocol::Block;
+
+    void blockDownload(const Block& block) {
+      static std::unordered_map<std::string, std::unique_ptr<SyncClient>> clients_;
+      auto target_ip = block.creator();
+      if (!clients_.count(target_ip))
+        clients_[target_ip] = std::make_unique<SyncClient>(target_ip);
+      // size()番目からBlockが無いので欲しい
+      clients_[target_ip]->fetchBlocks(sync::strage::strage().size());
+    }
+
     SyncClient::SyncClient(std::string ip) {
       stub_ = Sync::NewStub(::grpc::CreateChannel(
           ip + ":50051", ::grpc::InsecureChannelCredentials()));
@@ -43,7 +54,10 @@ namespace sync {
         std::cout << "Read Block!!" << std::endl;
         std::cout << "id: " << res_block.id() << std::endl;
         std::cout << "context: " << res_block.context() << std::endl;
-        sync::strage::strage().emplace_back(res_block);
+
+        if (sync::strage::validate(res_block)) {
+          sync::strage::strage().emplace_back(res_block);
+        }
 
         std::cout << "status: " << sync::strage::status().synced() << std::endl;
       }

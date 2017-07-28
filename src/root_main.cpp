@@ -5,6 +5,7 @@
 
 #include <client/commitClient.hpp>
 #include <helper/ip_tools.hpp>
+#include <helper/thread_pool.hpp>
 #include <server/peersServer.hpp>
 #include <server/syncServer.hpp>
 #include <strage/strage.hpp>
@@ -37,12 +38,13 @@ int main() {
     pr += i;
     pr %= mod;
 
+    helper::thread::pool().process(std::thread(commit::client::commit, block));
+
     sync::strage::strage().emplace_back(block);
     std::cout << i << "-th block send!!" << std::endl;
-    commit::client::commit(sync::strage::strage().at(i));
 
     // wait 1 sec
-    std::chrono::milliseconds wait(1000);
+    std::chrono::milliseconds wait(500);
     std::this_thread::sleep_for(wait);
   }
 
